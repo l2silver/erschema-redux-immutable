@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Action creates an action instance with access to get 1`] = `
+Array [
+  Object {
+    "entities": Array [
+      Object {
+        "id": 1,
+        "name": "John",
+      },
+    ],
+    "entityName": "users",
+  },
+  Object {
+    "entityName": "users",
+    "relationships": Object {
+      "idValuePairs": Array [
+        Object {
+          "id": "1",
+          "value": Array [],
+        },
+      ],
+      "name": "friends",
+    },
+  },
+]
+`;

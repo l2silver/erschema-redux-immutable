@@ -1,0 +1,29 @@
+// @flow
+import {flowRight, pick} from 'lodash';
+
+export default function standardizeEntity (
+  {
+    idFunc,
+    properties,
+    modifier = (ent)=>ent,
+    Model,
+    relationships,
+    premodifier
+  }: Object) {
+  if (!Model) {
+    throw TypeError('Model attribute of schema is missing')
+  }
+  if (!properties) {
+    throw TypeError('properties attribute of schema is missing')
+  }
+  return {
+    idFunc,
+    modifier: flowRight([
+      (ent)=>pick(ent, properties),
+      modifier,
+    ]),
+    Model,
+    relationships,
+    premodifier,
+  }
+}

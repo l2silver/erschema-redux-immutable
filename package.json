@@ -1,0 +1,54 @@
+{
+  "name": "erschema-redux-immutable",
+  "version": "1.0.13",
+  "description": "A collection of utilties for building redux erschema applications",
+  "scripts": {
+    "clean": "rm -rf erschema && rm -rf action-handlers && rm -rf normalize && rm -rf reducer && rm -rf selectors && rm -rf actions",
+    "build": "babel src --out-dir ./",
+    "type": "flow-copy-source -v src ./ --ignore '*.test.*'",
+    "prepublish": "npm run clean && npm run build && npm run type",
+    "test": "npm run flow && npm run jest",
+    "jest": "jest",
+    "flow": "flow",
+    "flowtyped": "flow-typed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l2silver/erschema.git"
+  },
+  "keywords": [
+    "redux",
+    "immutable"
+  ],
+  "author": "Leigh Silverstein",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/l2silver/erschema/issues"
+  },
+  "homepage": "https://github.com/l2silver/erschema#readme",
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "chance": "^1.0.6",
+    "flow-bin": "^0.41.0",
+    "flow-copy-source": "^1.1.0",
+    "flow-typed": "^2.0.0",
+    "jest": "^19.0.2",
+    "babel-plugin-module-resolver": "^2.7.0"
+  },
+  "dependencies": {
+    "humps": "^2.0.0",
+    "immutable": "^3.8.1",
+    "redux-actions": "^2.0.1",
+    "resource-action-types": "^1.0.1",
+    "blacklist": "^1.1.4",
+    "redux": "^3.6.0",
+    "redux-batched-actions": "^0.1.5",
+    "redux-overlord": "^1.0.0",
+    "redux-retype-actions": "^1.0.3",
+    "reselect": "^3.0.0"
+  }
+}

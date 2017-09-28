@@ -1,0 +1,10 @@
+/erschema
+/action-handlers
+/actions
+/normalize
+/reducer
+/selectors
+node_modules/
+.DS_Store
+dist
+npm-debug.log
