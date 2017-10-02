@@ -1,8 +1,7 @@
-/erschema
-/action-handlers
-/actions
-/normalize
-/reducer
+/Actions
+/schemas
+/actions-handlers
+/reducers
 /selectors
 node_modules/
 .DS_Store

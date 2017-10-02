@@ -11,6 +11,7 @@ type $props = {
   modelGenerator?: (entity: Object) => Class<any>,
   Model?: Class<any>,
   locationPath?: string[],
+  defaultStateConfig?: Object,
 };
 
 
@@ -26,7 +27,6 @@ export default function ({name, Model, modelGenerator, defaultStateConfig = {}, 
   else {
     throw new TypeError('please include Model name')
   }
-
   return handleActions(
     {
       [actionNames.create(name)]: handlers.create(finalModelGenerator, locationPath),

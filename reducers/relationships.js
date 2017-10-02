@@ -58,9 +58,10 @@ function getMapOfRelationshipDefaultValues(relationships) {
   var startValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   return relationships.reduce(function (finalResult, _ref) {
-    var name = _ref.name;
+    var name = _ref.name,
+        entityName = _ref.entityName;
 
-    finalResult[name] = new _immutable.Map({});
+    finalResult[name || entityName] = new _immutable.Map({});
     return finalResult;
   }, startValue);
 }

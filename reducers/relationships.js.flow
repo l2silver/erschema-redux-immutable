@@ -49,7 +49,7 @@ function getMapOfRelationships(relationships, startValue = {}, page){
   }, startValue)
 }
 
-export default function ({name, relationshipsSchema, otherActions = {}}: $props) {
+export default function ({name, relationshipsSchema = [], otherActions = {}}: $props) {
   const relationships = relationshipsSchema
   const mapOfRelationshipDefaultValues = getMapOfRelationshipDefaultValues(relationships)
   const mapOfRelationshipTypes = getMapOfRelationshipTypes(relationships)
@@ -74,7 +74,7 @@ export default function ({name, relationshipsSchema, otherActions = {}}: $props)
 
 export function relationshipPageReducer({name, relationshipsSchema, otherActions = {}}: $pageProps) {
   const relationships = Object.keys(relationshipsSchema).reduce((finalResult, page)=>{
-    finalResult[page] = relationshipsSchema[page]
+    finalResult[page] = relationshipsSchema[page] || []
     return finalResult
   }, {})
   const mapOfRelationshipDefaultValues = Object.keys(relationships).reduce((finalResult, page)=>{
