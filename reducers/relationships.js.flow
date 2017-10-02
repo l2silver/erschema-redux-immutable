@@ -26,8 +26,8 @@ type $pageProps = $coreProps & {
 };
 
 function getMapOfRelationshipDefaultValues(relationships, startValue = {}){
-  return relationships.reduce((finalResult, {name}) => {
-    finalResult[name] = new Map({})
+  return relationships.reduce((finalResult, { name, entityName }) => {
+    finalResult[name || entityName] = new Map({})
     return finalResult
   }, startValue)
 }
