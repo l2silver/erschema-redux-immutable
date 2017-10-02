@@ -40,7 +40,7 @@ Erschema uses a modified and flat version of https://github.com/paularmstrong/no
 
 ```
 import {combineReducers} from 'redux'
-import erschemaReducer from 'erschema-redux-immutable/reducer'
+import erschemaReducer from 'erschema-redux-immutable/reducers'
 
 const usersSchema = {
   idFunc: (entity)=>entity.id,
