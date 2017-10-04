@@ -1,6 +1,7 @@
 // @flow
+import {Map} from 'immutable'
 import reducer from './reducer'
-import {standardizeEntity} from 'erschema'
+import standardizeEntity from '../schemas'
 
 describe('reducer', function () {
   class Model {
@@ -15,7 +16,7 @@ describe('reducer', function () {
       users: standardizeEntity({properties: ['name'], Model})
     }
     const basicReducer = reducer({schema})
-    expect(basicReducer(undefined, {}).entities.users.toJS()).toEqual({data: {}})
+    expect(basicReducer(undefined, {}).entities.users).toEqual(new Map())
     expect(basicReducer(undefined, {}).relationships.users.toJS()).toEqual({})
   })
 })
