@@ -1,14 +1,16 @@
 // @flow
-import normalize from 'erschema'
-import {batchActions} from 'redux-batched-actions'
+import normalize from 'erschema';
+import {batchActions} from 'redux-batched-actions';
+import {retypeAction} from 'redux-retype-actions';
 import {get} from 'lodash';
-import {entityActions, relationshipActions} from '../actions-handlers'
+import {generateActionName} from 'resource-action-types';
+import entityActions from '../entities/actions'
+import relationshipActions from '../relationships/actions'
 
 
-import type {$schemaWithRelationshipsArray, $entitySchemaWithRelationshipsArray} from 'erschema/types'
+import type {$schema} from 'erschema/types';
 
-
-export default function normalizeToStore(entity: Object, name: string, schema: $schemaWithRelationshipsArray, firstSchema?: $entitySchemaWithRelationshipsArray, options?: Object = {}){
+export function normalizeActions(entity: Object, name: string, schema: $schema, firstSchema?: $schema, options?: Object = {}){
   const {entities: allEntities, relationships: allRelationships} = normalize(entity, name, schema, firstSchema)
   const entitiesForStore = Object.keys(allEntities).reduce((finalResult, entityName)=>{
     const entities = allEntities[entityName]
@@ -34,13 +36,21 @@ export default function normalizeToStore(entity: Object, name: string, schema: $
     }, allRelationshipActions)
     return allRelationshipActions
   }, [])
-  return batchActions([...entitiesForStore, ...relationshipsForStore])
+  return retypeAction(
+    `NORMALIZE_${generateActionName(name)}`,
+    batchActions([...entitiesForStore, ...relationshipsForStore]),
+    entity
+  )
 }
 
-export function indexNormalizeToStore(entities: Object[], name: string, schema: $schemaWithRelationshipsArray, firstSchema?: $entitySchemaWithRelationshipsArray, options?: {}){
-  return batchActions(
-    entities.map((entity)=>{
-      return normalizeToStore(entity, name, schema, firstSchema)
-    })
+export function indexNormalizeActions(entities: Object[], name: string, schema: $schema, firstSchema?: $schema, options?: {}){
+  return retypeAction(
+    `INDEX_NORMALIZE_${generateActionName(name)}`,
+    batchActions(
+      entities.map((entity)=>{
+        return normalizeActions(entity, name, schema, firstSchema, options)
+      })
+    ),
+    entities,
   )
 }

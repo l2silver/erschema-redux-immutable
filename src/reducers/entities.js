@@ -25,7 +25,7 @@ export default function ({name, Model, modelGenerator, defaultStateConfig = {}, 
     finalModelGenerator = modelGenerator
   }
   else {
-    throw new TypeError('please include Model name')
+    throw new TypeError('please include Model or modelGenerator')
   }
   return handleActions(
     {

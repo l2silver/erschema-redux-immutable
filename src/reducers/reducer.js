@@ -2,6 +2,9 @@
 import { Map } from 'immutable'
 import reduxOverlord from 'redux-overlord'
 import {combineReducers} from 'redux'
+import reduxComposeHors from 'redux-compose-hors';
+import { enableBatching } from 'redux-batched-actions';
+import { enableRetyping } from 'redux-retype-actions';
 import entityReducer from './entities'
 import relationshipReducer, {relationshipPageReducer} from './relationships'
 import hor from './hor'
@@ -66,5 +69,5 @@ export default function({schema, entities = {}, relationships = {}, overlordActi
     entities: combineReducers(entityReducers),
     relationships: combineReducers(relationshipReducers),
   })
-  return reduxOverlord(entityRelationshipReducers, hor(overlordActions))
+  return reduxComposeHors(reduxOverlord(entityRelationshipReducers, hor(overlordActions)), enableBatching, enableRetyping)
 }

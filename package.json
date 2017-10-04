@@ -47,8 +47,9 @@
     "redux": "^3.6.0",
     "redux-actions": "^2.0.1",
     "redux-batched-actions": "^0.1.5",
+    "redux-compose-hors": "^1.0.0",
     "redux-overlord": "^1.0.0",
-    "redux-retype-actions": "^1.0.3",
+    "redux-retype-actions": "^1.0.5",
     "reselect": "^3.0.0",
     "resource-action-types": "^1.0.1"
   }

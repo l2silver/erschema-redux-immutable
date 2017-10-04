@@ -1,35 +1,49 @@
 // @flow
-import {createAction} from 'redux-actions'
 import actionNames from 'resource-action-types'
 export default {
-  create(entityName: string, entity: Object | Error) {
-    if (entity instanceof Error) {
-      return createAction(actionNames.create(entityName))(entity)
-    }
-    return createAction(actionNames.create(entityName))({entity})
+  create(entityName: string, entity: Object, error?: boolean) {
+    return {
+      type: actionNames.create(entityName),
+      payload: {
+        entity
+      },
+      error,
+    };
   },
-  update(entityName: string, entity: Object | Error) {
-    if (entity instanceof Error) {
-      return createAction(actionNames.update(entityName))(entity)
-    }
-    return createAction(actionNames.update(entityName))({entity})
+  update(entityName: string, entity: Object, error?: boolean) {
+    return {
+      type: actionNames.update(entityName),
+      payload: {
+        entity
+      },
+      error,
+    };
   },
-  remove(entityName: string, entityId: string | number | Error) {
-    if (entityId instanceof Error) {
-      return createAction(actionNames.remove(entityName))(entityId)
-    }
-    return createAction(actionNames.remove(entityName))({id: entityId})
+  remove(entityName: string, id: string | number, error?: boolean) {
+    return {
+      type: actionNames.remove(entityName),
+      payload: {
+        id,
+      },
+      error,
+    };
   },
-  get(entityName: string, entity: Object | Error) {
-    if (entity instanceof Error) {
-      return createAction(actionNames.get(entityName))(entity)
-    }
-    return createAction(actionNames.get(entityName))({entity})
+  get(entityName: string, entity: Object, error?: boolean) {
+    return {
+      type: actionNames.get(entityName),
+      payload: {
+        entity,
+      },
+      error,
+    };
   },
   index(entityName: string, entities: Object[] | Error) {
-    if (entities instanceof Error) {
-      return createAction(actionNames.index(entityName))(entities)
-    }
-    return createAction(actionNames.index(entityName))({entities})
+    return {
+      type: actionNames.index(entityName),
+      payload: {
+        entities,
+      },
+      error,
+    };
   }
 }
