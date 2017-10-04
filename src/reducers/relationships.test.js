@@ -1,27 +1,27 @@
 // @flow
 import * as Immutable from 'immutable'
-import relationshipReducer from './reducer'
-import actions from './actions'
+import relationshipReducer from './relationships'
+import actions from '../actions-handlers/relationships/actions'
 import {relationshipTypes} from 'erschema'
 const {MANY, ONE} = relationshipTypes
 
 const getId = ()=>Math.round((Math.random() * 1000000))
 const {Record, Map, OrderedSet} = Immutable
 
-describe('entityReducer', function () {
+describe('relationshipsReducer', function () {
   const name = 'users'
-  const relationshipsSchema = {
-    manyRelationships: {
-      friends: [{
-        name: 'people'
-      }]
+  const relationshipsSchema = [
+    {
+      name: 'friends',
+      entityName: 'people',
+      type: relationshipTypes.MANY,
     },
-    monoRelationships: {
-      friend: [{
-        name: 'people'
-      }]
+    {
+      name: 'friend',
+      entityName: 'people',
+      type: relationshipTypes.ONE,
     }
-  }
+  ]
   
   function getDefaultState (initialState = {}) {
     return new (Record({friend: new Map(), friends: new Map(initialState)}))()
@@ -29,11 +29,6 @@ describe('entityReducer', function () {
   it('returns default state', function () {
     const defaultState = getDefaultState()
     const usersReducer = relationshipReducer({name, relationshipsSchema})
-    expect(usersReducer(undefined, {type: 1}).toObject()).toEqual(defaultState.toObject())
-  })
-  it('returns default state with config', function () {
-    const defaultState = new (Record({friend: new Map(), friends: new Map(), otherData: new Map()}))()
-    const usersReducer = relationshipReducer({name, relationshipsSchema, defaultStateConfig: {otherData: new Map()}})
     expect(usersReducer(undefined, {type: 1}).toObject()).toEqual(defaultState.toObject())
   })
   describe('actions', function () {
