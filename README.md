@@ -6,11 +6,11 @@ A smart immutablejs library for managing and accessing the redux-store
 
 Redux applications all have a few key components. Reducers to change the store's state, actions to trigger the reducer, and selectors to pull data from the store.
 Most applications will write a custom function for each case in a reducer function, which generally require custom actions to trigger the reducer, and custom selectors to retreive the data.
-Erschema-suite uses standard RESTful reducers and actions, which also results in a standardized store state that is easy to select data from.
+erschema-redux-immutable uses standard RESTful reducers and actions, which also results in a standardized store state that is easy to select data from.
 
 ### Redux Store
 
-The erschema provides a reducer function that stores data in two basic places: Entities, and Relationships.
+The erschema-redux-immutable provides a reducer function that stores data in two basic places: Entities, and Relationships.
 
 ```
 import {Record, Map} from 'immutable'
@@ -36,7 +36,7 @@ import {Record, Map} from 'immutable'
 
 #### Schemas
 
-Erschema uses a modified and flat version of https://github.com/paularmstrong/normalizr to not only normalize data, but also construct the structure of the redux-store
+erschema-redux-immutable uses [erschema](https://github.com/l2silver/erschema) schemas to normalize data, and construct the structure of the redux-store
 
 ```
 import {combineReducers} from 'redux'
