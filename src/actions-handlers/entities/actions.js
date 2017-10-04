@@ -37,7 +37,7 @@ export default {
       error,
     };
   },
-  index(entityName: string, entities: Object[] | Error) {
+  index(entityName: string, entities: Object[], error?: boolean) {
     return {
       type: actionNames.index(entityName),
       payload: {
