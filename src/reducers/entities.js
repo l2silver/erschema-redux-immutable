@@ -2,7 +2,7 @@
 import {handleActions} from 'redux-actions'
 import actionNames from 'resource-action-types'
 import {Map} from 'immutable'
-import handlers from '../actions-handlers/entities/handlers';
+import handlers from '../handlers/entities';
 
 type $props = {
   name: string,

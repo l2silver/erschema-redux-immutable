@@ -3,7 +3,7 @@ import {Map} from 'immutable'
 import {handleActions} from 'redux-actions'
 import actionNames from 'resource-action-types'
 import {relationshipTypes} from 'erschema'
-import handlers from '../actions-handlers/relationships/handlers'
+import handlers from '../handlers/relationships'
 import generateDefaultState from './generateDefaultState'
 
 import type {$relationshipSchema} from 'erschema/types'

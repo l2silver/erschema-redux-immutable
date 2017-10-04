@@ -4,8 +4,8 @@ import {batchActions} from 'redux-batched-actions';
 import {retypeAction} from 'redux-retype-actions';
 import {get} from 'lodash';
 import {generateActionName} from 'resource-action-types';
-import entityActions from '../entities/actions'
-import relationshipActions from '../relationships/actions'
+import entityActions from '../entities'
+import relationshipActions from '../relationships'
 
 
 import type {$schema} from 'erschema/types';

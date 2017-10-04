@@ -1,7 +1,7 @@
 // @flow
 import * as Immutable from 'immutable'
 import relationshipReducer from './relationships'
-import actions from '../actions-handlers/relationships/actions'
+import actions from '../actions/relationships'
 import {relationshipTypes} from 'erschema'
 const {MANY, ONE} = relationshipTypes
 
