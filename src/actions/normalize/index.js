@@ -4,13 +4,12 @@ import {batchActions} from 'redux-batched-actions';
 import {retypeAction} from 'redux-retype-actions';
 import {get} from 'lodash';
 import {generateActionName} from 'resource-action-types';
-import entityActions from '../entities'
-import relationshipActions from '../relationships'
-
+import * as entityActions from '../entities'
+import * as relationshipActions from '../relationships'
 
 import type {$schema} from 'erschema/types';
 
-export function normalizeActions(entity: Object, name: string, schema: $schema, firstSchema?: $schema, options?: Object = {}){
+export default function normalizeActions(entity: Object, name: string, schema: $schema, firstSchema?: $schema, options?: Object = {}){
   const {entities: allEntities, relationships: allRelationships} = normalize(entity, name, schema, firstSchema)
   const indexEntities = Object.keys(allEntities).reduce((finalResult, entityName)=>{
     const entities = allEntities[entityName]
@@ -30,7 +29,7 @@ export function normalizeActions(entity: Object, name: string, schema: $schema, 
         return finalResult
       }, [])
       
-      const relationshipActionName = get(options, `relationships.${entityName === 'pages' ? idValuePairs[0].id : entityName}.${relationshipName}.concat`) ? 'concatRelationship' : 'index'
+      const relationshipActionName = get(options, `relationships.${entityName === 'pages' ? idValuePairs[0].id : entityName}.${relationshipName}.concat`) ? 'concat' : 'index'
       finalResult.push(relationshipActions[relationshipActionName](entityName, {name: relationshipName, idValuePairs}))
       return finalResult
     }, allRelationshipActions)
@@ -42,7 +41,7 @@ export function normalizeActions(entity: Object, name: string, schema: $schema, 
   }
 }
 
-export function indexNormalizeActions(entities: Object[], name: string, schema: $schema, firstSchema?: $schema, options?: {}){
+export function indexNormalize(entities: Object[], name: string, schema: $schema, firstSchema?: $schema, options?: {}){
   return entities.map((entity)=>{
     return normalizeActions(entity, name, schema, firstSchema, options)
   })

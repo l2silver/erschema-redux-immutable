@@ -1,8 +1,8 @@
-/Actions
+/actions
 /schemas
-/actions-handlers
 /reducers
 /selectors
+/handlers
 node_modules/
 .DS_Store
 dist
