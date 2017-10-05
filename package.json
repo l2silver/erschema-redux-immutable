@@ -36,8 +36,7 @@
     "flow-bin": "^0.41.0",
     "flow-copy-source": "^1.1.0",
     "flow-typed": "^2.0.0",
-    "jest": "^19.0.2",
-    "babel-plugin-module-resolver": "^2.7.0"
+    "jest": "^19.0.2"
   },
   "dependencies": {
     "erschema": "^1.1.2",
