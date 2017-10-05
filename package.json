@@ -40,13 +40,10 @@
     "babel-plugin-module-resolver": "^2.7.0"
   },
   "dependencies": {
-    "blacklist": "^1.1.4",
     "erschema": "^1.1.2",
-    "humps": "^2.0.0",
     "immutable": "^3.8.1",
     "redux": "^3.6.0",
     "redux-actions": "^2.0.1",
-    "reselect": "^3.0.0",
     "resource-action-types": "^1.0.1"
   }
 }
