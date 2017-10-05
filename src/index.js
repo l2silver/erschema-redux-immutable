@@ -1,15 +1,13 @@
 // @flow
 import { Map } from 'immutable'
-import reduxOverlord from 'redux-overlord'
 import {combineReducers} from 'redux'
-import reduxComposeHors from 'redux-compose-hors';
-import { enableBatching } from 'redux-batched-actions';
-import { enableRetyping } from 'redux-retype-actions';
-import entityReducer from './entities'
-import relationshipReducer, {relationshipPageReducer} from './relationships'
-import hor from './hor'
+import entityReducer from './reducers/entities'
+import relationshipReducer, {relationshipPageReducer} from './reducers/relationships'
+
 import type {$schema} from 'erschema/types'
-import type {$mapOf, $reducer} from './hor'
+
+type $mapOf<X> = {[key: string]: X}
+type $reducer = (state: any, action: Object)=>any;
 
 type $input = {
   schema: $schema,
@@ -33,7 +31,7 @@ const getPageModelGenerator = function(schema: $schema){
   }
 }
 
-export default function({schema, entities = {}, relationships = {}, overlordActions = {}, pageSchema, pageOtherActionHandlers}: $input){
+export default function({schema, entities = {}, relationships = {}, pageSchema, pageOtherActionHandlers}: $input){
   const pageEntity = {}
   const pageRelationship = {}
   if(pageSchema){
@@ -46,7 +44,7 @@ export default function({schema, entities = {}, relationships = {}, overlordActi
           return finalResult;
         }, {})
     })
-    pageRelationship.pages = relationships.pages || relationshipPageReducer({name: 'pages', relationshipsSchema: getPageRelationships(pageSchema)})
+    pageRelationship.pages = relationships.pages || relationshipPageReducer({entityName: 'pages', relationshipsSchema: getPageRelationships(pageSchema)})
   }
   const entityReducers = Object.keys(schema).reduce((finalResult, schemaName)=>{
     const entitySchema = schema[schemaName]
@@ -60,14 +58,13 @@ export default function({schema, entities = {}, relationships = {}, overlordActi
     const entitySchema = schema[schemaName]
     const {relationships: relationshipSchemas} = entitySchema
     finalResult[schemaName] = relationships[schemaName] || relationshipReducer({
-      name: schemaName,
+      entityName: schemaName,
       relationshipsSchema: relationshipSchemas
     })
     return finalResult
   }, pageRelationship)
-  const entityRelationshipReducers = combineReducers({
+  return combineReducers({
     entities: combineReducers(entityReducers),
     relationships: combineReducers(relationshipReducers),
   })
-  return reduxComposeHors(reduxOverlord(entityRelationshipReducers, hor(overlordActions)), enableBatching, enableRetyping)
 }

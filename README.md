@@ -1,6 +1,6 @@
 # erschema-redux-immutable
 
-A smart immutablejs library for managing and accessing the redux-store
+A smart immutablejs library for managing the redux-store
 
 ### Basic Concepts
 
@@ -18,18 +18,18 @@ import {Record, Map} from 'immutable'
 {
   other store properties...,
   erschema: {
-    entities: Map<{
+    entities: {
       users: Map<{
         id: UserRecord<{id, name}>
       }>
-    }>,
-    relationships: Map<{
+    },
+    relationships: {
       users: Map<{
         friends: Map<{
           [userId]: OrderedList<friendId> (For one to many relationships) || friendId (for one to one relationships)
         }>
       }>
-    }>
+    }
   }
 }
 ```
@@ -40,12 +40,14 @@ erschema-redux-immutable uses [erschema](https://github.com/l2silver/erschema) s
 
 ```
 import {combineReducers} from 'redux'
+import standardizeSchema from 'erschema-redux-immutable/schemas'
 import erschemaReducer from 'erschema-redux-immutable/reducers'
 
-const usersSchema = {
+const usersSchema = standardizeSchema({
+  properties: string[] | {[key: string]: any},
   idFunc: (entity)=>entity.id,
-  properties: {id: 0, name: ''},
   modifier: (ent)=>ent,
+  premodifier: (ent)=>ent
   Model: UserModel,
   relationships: [
       {
@@ -54,7 +56,9 @@ const usersSchema = {
       }
     ],
   },
-}
+})
+
+// standardizeSchema has one purpose, it takes the known properties of a model and blacklists all other properties using a modifier function that pipes into any other modifier functions. This is especially useful when dealing with Immutable.Record models that actually error out when the wrong properties are passed to it for certain actions.
 
 combineReducers({
   ...otherReducers,
@@ -85,16 +89,21 @@ combineReducers({
 ```
 
 
-### Actions
+### Handlers
 
-#### The standardize erschema actions for relationships are:
+#### The standardize erschema handlers for relationships are:
 
-* link
-* unlink
-* createRelationship
-* indexRelationship
-* concatRelationship
-* reorder
+```
+import {
+  link,
+  unlink,
+  create,
+  index,
+  concat,
+  reorder,
+
+} from 'erschema-redux-immutable/handlers/relationships
+```
 
 ##### link
 
@@ -118,7 +127,7 @@ Removes a relatedEntityId from a relationship for one-to-many relationships, or 
 }
 ```
 
-##### createRelationship
+##### create
 
 Creates a relationship entry for an entityId
 ```
@@ -128,7 +137,7 @@ Creates a relationship entry for an entityId
       }
 ```
 
-##### indexRelationship
+##### index
 
 Creates a relationship entry for multiple entity ids
 ```
@@ -140,7 +149,7 @@ Creates a relationship entry for multiple entity ids
       }
 ```
 
-##### concatRelationship
+##### concat
 
 Adds multiple relatedEntityIds to an existing relationship for multiple
 ```
@@ -158,13 +167,16 @@ Reorders relationship
 }
 ```
 
-#### The standardized erschema actions for entities are:
-
-* create
-* update
-* remove
-* get
-* index
+#### The standardized erschema handlers for entities are:
+```
+import {
+  create
+  update
+  remove
+  get
+  index
+} from 'erschema-redux-immutable/handlers/entities
+```
 
 ##### create
 
@@ -197,77 +209,269 @@ removes an entity
 }
 ```
 
-##### get/index
+##### get
 
-gets for adding a single entity, or index for adding multiple entities of the same type.
-
-get and index are also special because these are the actions that do normalizing. So anytime you get an object, and it has nested entities in it, you must use either get or index to store the normalized data properly in the reducer
-
-#### The Action Class
-
-Instead of calling the actions individually when ever they're needed, erschema-suite comes with an Actions class that stores the basic entity actions in the actions property of the class
-
+similar to create entity except merges with previous existing entity if it exists
 ```
-// Using the get action stored in the Actions class
-const USERS = 'users'
-
-class UserActions extends Actions {
-  get = (id: number) => dispatch => {
-    return userService.get(id).then((user)=>{
-      dispatch(this.actions.get(user))
-    })
-  }
+{
+  data: {} ===> {
+                  [entityId]: entity 
+                }
 }
-export default new UserActions(USERS)
 ```
 
-### Selectors
+##### index
 
-Selectors are a way of minimizing rerender cycles in react. See https://github.com/reactjs/reselect for more information
-
-Erschema ships with a Selectors class that comes with a basic set of selectors that can be used to access any part of the redux store, and they are as follows:
-
-* find
-* get
-* getRelatedIds
-* getRelatedId
-* findEntityData
-* findManyRelationshipData
-* findMonoRelationshipData
-
-#### find
-
-Retrieve a single entity
-
+similar to get except takes an array of entities instead of just one
 ```
-// default idSelector is props.id
-this.find(idSelector?: (state, props)=>id = (state, props)=>props.id)
+{
+  data: {} ===> {
+                  [entityId]: entity,
+                  [entityId]: entity,
+                  [entityId]: entity,
+                }
+}
 ```
 
-#### get
+### Reducers
 
-Retrieves many entities
+The handlers above are stored in reducers for specific entities and relationships
 
-```
-this.get(idsSelector: (state, props)=>[id])
-```
+#### Entity Reducers
 
-#### findRelatedId
-
-Retrieve related entity id for one-to-one relationship
+recall that reduxStore has the following shape
 
 ```
-this.findRelatedId(relationshipName: string, idSelector?: (state, props)=>id = (s,p)=>p.id)
+  {
+    entities: {
+      users: Map<{
+        id: UserRecord<{id, ...}>
+      }>
+    },
+    relationships: ...,
+  }
 ```
 
-#### getRelatedIds
-
-Retrieve related entity id for one-to-one relationship
+The entity reducer has the following state structure:
 
 ```
-this.getRelatedIds(relationshipName: string, idSelector?: (state, props)=>id = (s,p)=>p.id)
+Map<{
+  id: UserRecord<{id, ...}>
+}>
 ```
 
-#### findEntityData, findMonoRelationshipData, findManyRelationshipData
+The entity reducer has all of the standard entity handlers built in to it.
 
-Get all of the respective entities, monoRelationships, and manyRelationships
+```
+import entityReducer from 'erschema-redux-immutable/reducers/entities'
+
+const userEntityReducer = entityReducer({
+  name: 'users',
+  ---
+  Model: UserModel,
+  or
+  modelGenerator: (ent)=>ent.inactive ? new InActiveUser(ent) : new ActiveUser(ent),
+  ---
+  otherActions: Object of additional handlers to put in reducer
+  defaultStateConfig: A plain javascript object to be wrapped by the immutable Map
+})
+```
+
+
+#### Relationship Reducers
+
+recall that reduxStore has the following shape
+
+```
+  {
+    entities: ...,
+    relationships: {
+      users: Map<{
+        friends: Map<{
+          [userId]: OrderedList<friendId> (For one to many relationships) || friendId (for one to one relationships)
+        }>
+      }>
+    }
+  }
+```
+
+the relationship reducer acts on the users relationship map, and encompasses:
+
+```
+Map<{
+  friends: Map<{
+    [userId]: OrderedList<friendId> (For one to many relationships) || friendId (for one to one relationships)
+  }>
+}>
+```
+
+This relationship reducer has all of the standard relationship handlers in addition to handlers for specific entity remove actions. The latter is used to clean relationship data when entities are deleted from the redux store, and in order for the reducer to do this, it must understand the relationship schema for a specific entity schema.
+
+```
+import relationshipReducer from 'erschema-redux-immutable/reducers/relationships'
+const userRelationshipReducer = relationshipReducer({
+  entityName: 'users',
+  relationshipSchema: [{
+    name: 'friends',
+    entityName: 'users,
+  }]
+})
+```
+
+This way, when a user is deleted, the reducer knows to look through those relationships for the deleted id, and remove it.
+
+### Erschema-Redux-Immutable Reducer
+
+The entity and relationship reducers can be used as directed above, but you can also use the generateErschemaReduxImmutableReducer to generate the entity reducers and relationship reducers for all of the entities in the schema.
+
+```
+import generateErschemaReduxImmutableReducer from 'erschema-redux-immutable'
+import usersSchema from './schemas/users'
+
+const erschemaReduxImmutableReducer = generateErschemaReduxImmutableReducer({
+  schema: {
+    users: usersSchema
+  }
+})
+```
+
+### Actions
+
+All standard actions are paired with their respective handlers to complete state changes
+
+#### The standardize erschema actions for relationships are:
+
+```
+import {
+  link,
+  unlink,
+  create,
+  index,
+  concat,
+  reorder,
+
+} from 'erschema-redux-immutable/actions/relationships
+
+type $id = string | number;
+type $relationship = {
+  relationshipName: string,
+  id: $id,
+  relationshipValue: $id | $id[]
+};
+
+type $relationships = {
+  name: string;
+  idValuePairs: Array<{id: $id, value: $id | $id[]}>;
+};
+
+type $changeRelationshipOrder = {
+  name: string,
+  id: $id,
+  originalOrdinal: number,
+  ordinal: number,
+}
+```
+
+##### link
+
+link(entityName, $relationship, ?error)
+
+##### unlink
+
+unlink(entityName, $relationship, ?error)
+
+##### create
+
+create(entityName, $relationship, ?error)
+
+##### index
+
+index(entityName, $relationships, ?error)
+
+##### concat
+
+concat(entityName, $relationships, ?error)
+
+##### reorder
+
+reorder(entityName, $changeRelationshipOrder, ?error)
+
+
+#### The standardized erschema actions for entities are:
+```
+import {
+  create
+  update
+  remove
+  get
+  index
+} from 'erschema-redux-immutable/actions/entities
+
+type $entity = {id: $id, ...}
+```
+
+##### create
+
+create(entityName: string, entity: $entity, error?: boolean)
+
+##### update
+
+update(entityName: string, entity: $entity, error?: boolean)
+
+##### remove
+
+remove(entityName: string, entityId: $id, error?: boolean)
+
+##### get
+
+get(entityName: string, entity: $entity, error?: boolean)
+
+##### index
+
+index(entityName: string, entities: $entity[], error?: boolean)
+
+### The Normalize Action
+
+```
+import normalizeActions from 'erschema-redux-immutable/actions/normalize'
+import schema from './schema'
+
+const userWithNestedData = {
+  id: 1,
+  name: 'Example',
+  friends: [{
+    id: 2,
+    name: 'Another Example',
+  }]
+}
+
+normalizeActions('users', userWithNestedData, schema)
+===>
+{
+  indexEntities: [{
+    type: 'INDEX_USERS',
+    payload: {
+      entities: [
+        {
+          id: 1,
+          name: 'Example'
+        },
+        {
+          id: 2,
+          name: 'Another Example'
+        }
+      ]
+    }
+  }],
+  indexRelationships: [{
+    type: 'INDEX_RELATIONSHIP_USERS',
+    payload: {
+      relationships: {
+        id: 1,
+        idValues: [2]
+      }
+    }
+  }]
+}
+```
+As you can see, normalizeActions breaks down a nested object into an array of entity and relationship index actions. You can use your own batched action mechanism for handling these actions in a performant way, like redux-batched-actions.

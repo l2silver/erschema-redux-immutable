@@ -12,7 +12,7 @@ import type {$schema} from 'erschema/types';
 
 export function normalizeActions(entity: Object, name: string, schema: $schema, firstSchema?: $schema, options?: Object = {}){
   const {entities: allEntities, relationships: allRelationships} = normalize(entity, name, schema, firstSchema)
-  const entitiesForStore = Object.keys(allEntities).reduce((finalResult, entityName)=>{
+  const indexEntities = Object.keys(allEntities).reduce((finalResult, entityName)=>{
     const entities = allEntities[entityName]
     const entitiesForIndex = Object.keys(entities).reduce((finalResult, entityId)=>{
       finalResult.push(entities[entityId])
@@ -21,7 +21,7 @@ export function normalizeActions(entity: Object, name: string, schema: $schema, 
     finalResult.push(entityActions.index(entityName, entitiesForIndex))
     return finalResult
   }, [])
-  const relationshipsForStore = Object.keys(allRelationships).reduce((allRelationshipActions, entityName)=>{
+  const indexRelationships = Object.keys(allRelationships).reduce((allRelationshipActions, entityName)=>{
     const relationships = allRelationships[entityName]
     const relationshipsForIndex = Object.keys(relationships).reduce((finalResult, relationshipName)=>{
       const relationship = relationships[relationshipName]
@@ -36,21 +36,14 @@ export function normalizeActions(entity: Object, name: string, schema: $schema, 
     }, allRelationshipActions)
     return allRelationshipActions
   }, [])
-  return retypeAction(
-    `NORMALIZE_${generateActionName(name)}`,
-    batchActions([...entitiesForStore, ...relationshipsForStore]),
-    entity
-  )
+  return {
+    indexEntities,
+    indexRelationships
+  }
 }
 
 export function indexNormalizeActions(entities: Object[], name: string, schema: $schema, firstSchema?: $schema, options?: {}){
-  return retypeAction(
-    `INDEX_NORMALIZE_${generateActionName(name)}`,
-    batchActions(
-      entities.map((entity)=>{
-        return normalizeActions(entity, name, schema, firstSchema, options)
-      })
-    ),
-    entities,
-  )
+  return entities.map((entity)=>{
+    return normalizeActions(entity, name, schema, firstSchema, options)
+  })
 }

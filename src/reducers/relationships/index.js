@@ -3,7 +3,7 @@ import {Map} from 'immutable'
 import {handleActions} from 'redux-actions'
 import actionNames from 'resource-action-types'
 import {relationshipTypes} from 'erschema'
-import handlers from '../handlers/relationships'
+import * as handlers from '../../handlers/relationships'
 import generateDefaultState from './generateDefaultState'
 
 import type {$relationshipSchema} from 'erschema/types'
@@ -11,7 +11,7 @@ import type {$relationshipSchema} from 'erschema/types'
 const {ONE, MANY} = relationshipTypes
 
 type $coreProps = {
-  name: string,
+  entityName: string,
 	options?: Object,
   otherActions?: Object,
   locationPath?: string[],
@@ -49,7 +49,7 @@ function getMapOfRelationships(relationships, startValue = {}, page){
   }, startValue)
 }
 
-export default function ({name, relationshipsSchema = [], otherActions = {}}: $props) {
+export default function ({entityName, relationshipsSchema = [], otherActions = {}}: $props) {
   const relationships = relationshipsSchema
   const mapOfRelationshipDefaultValues = getMapOfRelationshipDefaultValues(relationships)
   const mapOfRelationshipTypes = getMapOfRelationshipTypes(relationships)
@@ -60,19 +60,19 @@ export default function ({name, relationshipsSchema = [], otherActions = {}}: $p
   }, {})
   return handleActions(
     {
-      [actionNames.link(name)]: handlers.link(mapOfRelationshipTypes),
-      [actionNames.unlink(name)]: handlers.unlink(mapOfRelationshipTypes),
-      [actionNames.createRelationship(name)]: handlers.createRelationship(mapOfRelationshipTypes),
-      [actionNames.concatRelationship(name)]: handlers.concatRelationship(mapOfRelationshipTypes),
-      [actionNames.indexRelationship(name)]: handlers.indexRelationship(mapOfRelationshipTypes),
-      [actionNames.reorder(name)]: handlers.reorder(mapOfRelationshipTypes),
+      [actionNames.link(entityName)]: handlers.link(mapOfRelationshipTypes),
+      [actionNames.unlink(entityName)]: handlers.unlink(mapOfRelationshipTypes),
+      [actionNames.createRelationship(entityName)]: handlers.create(mapOfRelationshipTypes),
+      [actionNames.concatRelationship(entityName)]: handlers.concat(mapOfRelationshipTypes),
+      [actionNames.indexRelationship(entityName)]: handlers.index(mapOfRelationshipTypes),
+      [actionNames.reorder(entityName)]: handlers.reorder(mapOfRelationshipTypes),
       ...removeActions,
       ...otherActions
     },
     generateDefaultState(mapOfRelationshipDefaultValues))
 }
 
-export function relationshipPageReducer({name, relationshipsSchema, otherActions = {}}: $pageProps) {
+export function relationshipPageReducer({entityName, relationshipsSchema, otherActions = {}}: $pageProps) {
   const relationships = Object.keys(relationshipsSchema).reduce((finalResult, page)=>{
     finalResult[page] = relationshipsSchema[page] || []
     return finalResult
@@ -94,11 +94,11 @@ export function relationshipPageReducer({name, relationshipsSchema, otherActions
   }, {})
   return handleActions(
     {
-      [actionNames.link(name)]: handlers.link({}, mapOfRelationshipTypes),
-      [actionNames.unlink(name)]: handlers.unlink({}, mapOfRelationshipTypes),
-      [actionNames.createRelationship(name)]: handlers.createRelationship({}, mapOfRelationshipTypes),
-      [actionNames.concatRelationship(name)]: handlers.concatRelationship({}, mapOfRelationshipTypes),
-      [actionNames.indexRelationship(name)]: handlers.indexRelationship({}, mapOfRelationshipTypes),
+      [actionNames.link(entityName)]: handlers.link({}, mapOfRelationshipTypes),
+      [actionNames.unlink(entityName)]: handlers.unlink({}, mapOfRelationshipTypes),
+      [actionNames.createRelationship(entityName)]: handlers.create({}, mapOfRelationshipTypes),
+      [actionNames.concatRelationship(entityName)]: handlers.concat({}, mapOfRelationshipTypes),
+      [actionNames.indexRelationship(entityName)]: handlers.index({}, mapOfRelationshipTypes),
       ...removeActions,
       ...otherActions
     },

@@ -1,7 +1,7 @@
 // @flow
 import {Record, Map} from 'immutable'
-import createReducer from './entities'
-import actions from '../actions/entities';
+import createReducer from './'
+import * as actions from '../../actions/entities';
 
 const getId = ()=>Math.round((Math.random() * 1000000))
 describe('reducer', function () {

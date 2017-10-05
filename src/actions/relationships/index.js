@@ -21,41 +21,57 @@ type $changeRelationshipOrder = {
   ordinal: number,
 }
 
-export default {
-  link(entityName: string, relationship: $relationship) {
-    if (relationship instanceof Error) {
-      return createAction(actionNames.link(entityName))(relationship)
-    }
-    return createAction(actionNames.link(entityName))({relationship})
-  },
-  unlink(entityName: string, relationship: $relationship) {
-    if (relationship instanceof Error) {
-      return createAction(actionNames.unlink(entityName))(relationship)
-    }
-    return createAction(actionNames.unlink(entityName))({relationship})
-  },
-  index(entityName: string, relationships: $relationships) {
-    if (relationships instanceof Error) {
-      return createAction(actionNames.indexRelationship(entityName))(relationships)
-    }
-    return createAction(actionNames.indexRelationship(entityName))({relationships})
-  },
-  create(entityName: string, relationship: $relationship) {
-    if (relationship instanceof Error) {
-      return createAction(actionNames.createRelationship(entityName))(relationship)
-    }
-    return createAction(actionNames.createRelationship(entityName))({relationship})
-  },
-  concatRelationship(entityName: string, relationships: $relationships) {
-    if (relationships instanceof Error) {
-      return createAction(actionNames.concatRelationship(entityName))(relationships)
-    }
-    return createAction(actionNames.concatRelationship(entityName))({relationships})
-  },
-  reorder(entityName: string, changeRelationshipOrder: $changeRelationshipOrder) {
-    if (changeRelationshipOrder instanceof Error) {
-      return createAction(actionNames.reorder(entityName))(changeRelationshipOrder)
-    }
-    return createAction(actionNames.reorder(entityName))({changeRelationshipOrder})
+export function link(entityName: string, relationship: $relationship, error?: boolean) {
+  return {
+    type: actionNames.link(entityName),
+    payload: {
+      relationship,
+    },
+    error,
+  }
+}
+export function unlink(entityName: string, relationship: $relationship, error?: boolean) {
+  return {
+    type: actionNames.unlink(entityName),
+    payload: {
+      relationship,
+    },
+    error,
+  }
+}
+export function index(entityName: string, relationships: $relationships, error?: boolean) {
+  return {
+    type: actionNames.indexRelationship(entityName),
+    payload: {
+      relationships,
+    },
+    error,
+  }
+}
+export function create(entityName: string, relationship: $relationship, error?: boolean) {
+  return {
+    type: actionNames.createRelationship(entityName),
+    payload: {
+      relationship,
+    },
+    error,
+  }
+}
+export function concat(entityName: string, relationships: $relationships, error?: boolean) {
+  return {
+    type: actionNames.concatRelationship(entityName),
+    payload: {
+      relationships,
+    },
+    error,
+  }
+}
+export function reorder(entityName: string, changeRelationshipOrder: $changeRelationshipOrder, error?: boolean) {
+  return {
+    type: actionNames.reorder(entityName),
+    payload: {
+      changeRelationshipOrder,
+    },
+    error,
   }
 }

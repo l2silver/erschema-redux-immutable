@@ -1,6 +1,6 @@
 // @flow
 import {Map} from 'immutable'
-import reducer from './reducer'
+import reducer from './'
 import standardizeEntity from '../schemas'
 
 describe('reducer', function () {
