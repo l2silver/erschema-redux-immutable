@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`normalize return an object with indexRelations and indexEntities 1`] = `
+Object {
+  "indexEntities": Array [
+    Object {
+      "error": undefined,
+      "payload": Object {
+        "entities": Array [
+          Object {
+            "id": 1,
+            "name": "Jimmy",
+          },
+        ],
+      },
+      "type": "INDEX_USER",
+    },
+  ],
+  "indexRelationships": Array [],
+}
+`;
