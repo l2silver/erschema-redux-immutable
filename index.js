@@ -66,10 +66,12 @@ var _relationships2 = _interopRequireDefault(_relationships);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getPageRelationships = function getPageRelationships(pageSchema) {
-  return Object.keys(pageSchema).reduce(function (finalResult, pageName) {
+  var results = Object.keys(pageSchema).reduce(function (finalResult, pageName) {
     finalResult[pageName] = pageSchema[pageName].relationships;
     return finalResult;
   }, {});
+  console.log('r', results);
+  return results;
 };
 
 var getPageModelGenerator = function getPageModelGenerator(schema) {
