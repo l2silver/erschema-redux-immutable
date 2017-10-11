@@ -33,8 +33,8 @@ function getMapOfRelationshipDefaultValues(relationships, startValue = {}){
 }
 
 function getMapOfRelationshipTypes(relationships){
-  return relationships.reduce((finalResult, {name, type})=>{
-    finalResult[name] = type
+  return relationships.reduce((finalResult, {name, type, entityName})=>{
+    finalResult[name || entityName] = type
     return finalResult
   }, {})
 }

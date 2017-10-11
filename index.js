@@ -41,7 +41,7 @@ exports.default = function (_ref) {
 
     finalResult[schemaName] = relationships[schemaName] || (0, _relationships2.default)({
       entityName: schemaName,
-      relationshipsSchema: relationshipSchemas
+      relationshipsSchema: relationshipSchemas || []
     });
     return finalResult;
   }, pageRelationship);
@@ -66,12 +66,10 @@ var _relationships2 = _interopRequireDefault(_relationships);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getPageRelationships = function getPageRelationships(pageSchema) {
-  var results = Object.keys(pageSchema).reduce(function (finalResult, pageName) {
+  return Object.keys(pageSchema).reduce(function (finalResult, pageName) {
     finalResult[pageName] = pageSchema[pageName].relationships;
     return finalResult;
   }, {});
-  console.log('r', results);
-  return results;
 };
 
 var getPageModelGenerator = function getPageModelGenerator(schema) {

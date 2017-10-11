@@ -59,7 +59,7 @@ export default function({schema, entities = {}, relationships = {}, pageSchema, 
     const {relationships: relationshipSchemas} = entitySchema
     finalResult[schemaName] = relationships[schemaName] || relationshipReducer({
       entityName: schemaName,
-      relationshipsSchema: relationshipSchemas
+      relationshipsSchema: relationshipSchemas || [],
     })
     return finalResult
   }, pageRelationship)
