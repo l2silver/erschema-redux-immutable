@@ -1,6 +1,6 @@
 {
   "name": "erschema-redux-immutable",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "A collection of utilties for building redux erschema applications",
   "scripts": {
     "clean": "rm -rf erschema && rm -rf actions-handlers && rm -rf action-handlers && rm -rf handlers && rm -rf schemas && rm index.js && rm -rf index.test.js && rm -rf normalize && rm -rf reducers && rm -rf reducer && rm -rf selectors && rm -rf actions",
