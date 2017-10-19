@@ -44,12 +44,13 @@ function getMapOfRelationships(relationships, startValue = {}, page){
     if(!finalResult[entityName]){
       finalResult[entityName] = []
     }
-    finalResult[entityName].push(page ? [name, page] : [name])
+    finalResult[entityName].push(page ? [name || entityName, page] : [name || entityName])
     return finalResult
   }, startValue)
 }
 
 export default function ({entityName, relationshipsSchema = [], otherActions = {}}: $props) {
+  
   const relationships = relationshipsSchema
   const mapOfRelationshipDefaultValues = getMapOfRelationshipDefaultValues(relationships)
   const mapOfRelationshipTypes = getMapOfRelationshipTypes(relationships)
